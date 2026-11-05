@@ -80,7 +80,7 @@ jobs:
           cp "app/build/$pkg-$version.fwsc" "app/build/$pkg.fwsc"
           # the app for host apps (base/README.md, .rfm1)
           ./build.sh --rfm1 --release "$version"
-          cp "app/build/$pkg-$version.rfm1" build/release-assets/
+          cp "app/build/rfm1/$pkg-$version.rfm1" build/release-assets/
         else
           ./build.sh
           cp "app/build/$pkg.fwsc" build/release-assets/
