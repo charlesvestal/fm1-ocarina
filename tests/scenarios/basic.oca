@@ -1,0 +1,105 @@
+# OCA-1 in fm1-base's simulator: the keys, the songbook, PLAY, the knobs, saving
+wait 700
+shot boot.png
+listen
+# key 9 at the middle octave is D5, the A button
+key 9 down
+wait 40
+expect note 74
+expect midi_out 1
+expect step 0
+shot note.png
+key 9 up
+wait 40
+expect note -1
+# Zelda's Lullaby on the keys: left up right, twice (B5 D6 A5 = keys 18 21 16)
+key 18 down
+wait 40
+expect step 1
+key 18 up
+wait 20
+key 21 down
+wait 40
+key 21 up
+wait 20
+key 16 down
+wait 40
+key 16 up
+wait 20
+expect step 3
+shot halfway.png
+key 18 down
+wait 40
+key 18 up
+key 21 down
+wait 40
+key 21 up
+key 16 down
+wait 40
+said ZELDA'S LULLABY, PLAYED
+expect heard 0
+shot heard.png
+key 16 up
+wait 2600
+expect heard -1
+# a held key comes back when the newer one is let go
+key 9 down
+wait 30
+key 12 down
+wait 30
+expect note 77
+key 12 up
+wait 30
+expect note 74
+key 9 up
+wait 30
+expect note -1
+# the songbook: Song of Storms, then PLAY plays it and names it
+turn PRESET 5
+wait 300
+expect song 5
+said SONG OF STORMS, 6 OF 12. A, DOWN, UP, A, DOWN, UP
+tap PLAY
+wait 30
+said PLAYING SONG OF STORMS
+expect auto 0
+expect note 74
+wav storms.wav
+wait 3200
+wavstop
+expect peak_db_min -20
+said SONG OF STORMS, PLAYED
+expect auto -1
+expect note -1
+# PLAY again stops it
+tap PLAY
+wait 600
+tap PLAY
+wait 30
+said STOPPED
+expect auto -1
+# the knobs
+turn K1 2
+wait 200
+expect breath 5
+said BREATH 5
+turn K4 20
+wait 200
+expect tune 20
+said TUNE, 20 CENTS SHARP
+shot knobs.png
+tap OCT+
+wait 30
+expect octave 1
+said OCTAVE HIGH
+expect dirty 1
+tap SAVE
+wait 30
+expect dirty 0
+said SAVED
+reboot
+wait 700
+expect song 5
+expect tune 20
+expect octave 1
+expect breath 5

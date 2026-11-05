@@ -1,0 +1,33 @@
+# The manual's and the site's screenshots (app/docs/img): ./build.sh --host, then
+#   app/build/host/oca_host tests/screens.oca app/docs/img
+wait 900
+shot screen-ready.png
+key 18 down
+wait 40
+key 18 up
+wait 20
+key 21 down
+wait 40
+key 21 up
+wait 20
+key 16 down
+wait 40
+key 16 up
+wait 20
+key 18 down
+wait 60
+shot screen-playing.png
+key 18 up
+wait 20
+key 21 down
+wait 40
+key 21 up
+key 16 down
+wait 60
+shot screen-heard.png
+key 16 up
+wait 2700
+turn PRESET 5
+turn K4 20
+wait 1600
+shot screen-storms.png

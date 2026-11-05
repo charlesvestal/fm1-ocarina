@@ -1,0 +1,15 @@
+# OCA-1's build settings (fm1-base's tools/build.py: ./build.sh)
+name = "OCA"                   # the build's files: oca.fwsc, oca-X.Y.fwsc
+id_prefix = "FM-1_14"          # package identity: dev FM-1_1400, releases FM-1_14XXYYZZ
+usb_manufacturer = "OCA-1"
+usb_product = "OCA-1 FM-1"
+ble = false                    # an instrument for the room: no radio
+mirror = true                  # the screen and panel on a computer (base web/mirror, tools/fm1_mirror.py)
+words = "words.tsv"
+include = ["dsp"]
+o2 = ["dsp/oca.c"]             # the voice, at -O2
+# the site
+tagline = "an ocarina for the FM-1, for games that listen"
+repo = "https://github.com/charlesvestal/fm1-ocarina"
+licence = "MPL-2.0"
+credits = "Built on fm1-base and felucca-bsp, from Felucca by Leo Kuroshita (Hügelton Instruments)."
