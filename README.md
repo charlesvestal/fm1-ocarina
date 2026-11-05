@@ -17,6 +17,19 @@ For the controls, see the [manual](app/docs/MANUAL.md).
 
 The toolchain, the SDK and the build container are fm1-base's. For details, see base/README.md.
 
+## Releasing
+
+Releases are built, tested and signed on GitHub by `.github/workflows/release.yml` (the shared FM-1 builder,
+zvenson/fm1-build@v1). Write the notes in a draft first, then push the tag:
+
+    gh release create vX.Y --draft --title "OCA-1 X.Y" --notes "..."
+    git push origin main vX.Y
+
+Then publish the site from the attested package:
+
+    gh release download vX.Y --pattern '*.fwsc' --dir app/build
+    PYTHON=/opt/homebrew/bin/python3.14 tools/publish_pages.sh X.Y app/build/oca-X.Y.fwsc
+
 ## Licence
 
 MPL-2.0. Built on [fm1-base](https://github.com/charlesvestal/fm1-base) and felucca-bsp, from
