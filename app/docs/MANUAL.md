@@ -62,12 +62,12 @@ If the game misses notes, hold each one a little longer or bring the FM-1 closer
 
 ## 3. The screen
 
-![OCA-1 halfway through Zelda's Lullaby: the first three buttons played, an underline under the fourth, B5 lit among the five notes](img/screen-playing.png "Halfway through a song")
+![OCA-1 halfway through Zelda's Lullaby: the first three buttons played, the fourth ringed and underlined as it sounds, B5 lit among the five notes](img/screen-playing.png "Halfway through a song")
 
 | Part | What it shows |
 | --- | --- |
 | Header | Shows OCA-1 and the octave, or the note that's sounding. After you change something, a message shows here for a moment. |
-| Songbook card | Shows the song's place in the book, its name and its buttons, with each button's note below it. The buttons you've played so far are in color, and the next one is underlined. |
+| Songbook card | Shows the song's place in the book, its name and its buttons, with each button's note below it. The buttons you've played so far are in color. The note you're playing has a ring around it and a line under it, and when you let go, the line moves to the next one. |
 | Five notes | Shows the game's buttons and their notes. The note that's sounding is dark. |
 | Knobs | Show BREATH, VIBRATO, GLIDE and TUNE. |
 

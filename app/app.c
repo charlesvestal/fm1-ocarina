@@ -116,12 +116,13 @@ static struct {
     int32_t sounding;                    /* the note sounding (key or PLAY), -1 none */
     uint8_t hist[SONG_MAX];              /* the last buttons played, newest last (NBUTTONS: not a song note) */
     uint8_t step;                        /* how far into the songbook's song the playing has come */
+    int8_t now_i;                        /* the songbook's note sounding (the last one of step), -1 none */
     int8_t heard;                        /* the song heard last, -1 none */
     uint32_t heard_at;
     int8_t auto_i;                       /* PLAY: the note of the song playing, -1 not playing */
     uint32_t auto_t;
     uint8_t redraw;
-} ui = {.sounding = -1, .heard = -1, .auto_i = -1};
+} ui = {.sounding = -1, .now_i = -1, .heard = -1, .auto_i = -1};
 
 static void text_cat(char *d, const char *s)
 {
@@ -287,14 +288,19 @@ static void played(int32_t note)
     const song_t *g = &SONGS[set.song];
     uint8_t b = (uint8_t)button_of(note);
     int32_t s;
-    uint32_t i;
+    uint32_t i, k;
+    ui.heard = -1;                           /* playing on: the song heard last is let go */
     for (i = 0; i + 1u < SONG_MAX; i++)
         ui.hist[i] = ui.hist[i + 1];
     ui.hist[SONG_MAX - 1] = b;
-    if (ui.step < g->n && g->b[ui.step] == b)
-        ui.step++;
-    else
-        ui.step = g->b[0] == b ? 1u : 0u;
+    for (k = g->n; k; k--) {                 /* the step: the longest start of the song the history ends with */
+        for (i = 0; i < k && ui.hist[SONG_MAX - k + i] == g->b[i]; i++)
+            ;
+        if (i == k)
+            break;
+    }
+    ui.step = (uint8_t)k;
+    ui.now_i = (int8_t)(k ? (int32_t)k - 1 : -1);
     for (s = 0; s < NSONGS; s++) {           /* the history ends with song s */
         const song_t *h = &SONGS[s];
         for (i = 0; i < h->n && ui.hist[SONG_MAX - h->n + i] == h->b[i]; i++)
@@ -328,6 +334,7 @@ static void silence(void)
     if (ui.sounding >= 0)
         plat_midi_send(0x08u | 0x80u << 8 | (uint32_t)ui.sounding << 16, TO_USB);
     ui.sounding = -1;
+    ui.now_i = -1;
     oca_note_off();
     ui.redraw = 1;
 }
@@ -370,10 +377,13 @@ static void auto_tick(uint32_t now)
 static void auto_start(void)
 {
     char t[48];
+    uint32_t i;
     silence();
     ui.auto_i = 0;
     ui.auto_t = plat_ms();
     ui.step = 0;
+    for (i = 0; i < SONG_MAX; i++)           /* the song from its start, whatever came before */
+        ui.hist[i] = NBUTTONS;
     t[0] = 0;
     text_cat(t, "PLAYING ");
     text_cat(t, SONGS[set.song].name);
@@ -587,6 +597,8 @@ static void draw_song(void)
     char t[16], n[8];
     int32_t i, w = 26, x0 = 120 - (int32_t)g->n * w / 2 + w / 2;
     int done = ui.heard == (int8_t)set.song && plat_ms() - ui.heard_at < 2500u;
+    /* the cursor: PLAY's note (through its gap too), else the note held, else the next one to play */
+    int32_t cur = ui.auto_i >= 0 ? ui.auto_i : ui.now_i >= 0 ? ui.now_i : ui.step;
     cv_begin(240, 116, C_PAPER);
     cv_rect(8, 4, 224, 108, C_CARD);
     int_text(set.song + 1, t);
@@ -599,12 +611,14 @@ static void draw_song(void)
     cv_text(120 - text_w(f, g->name) / 2, 24, f, g->name, done ? C_GOOD : C_INK);
     for (i = 0; i < (int32_t)g->n; i++) {
         int32_t cx = x0 + i * w, cy = 72;
-        int played_yet = done || i < (int32_t)ui.step;
-        button_glyph(cx, cy, 11, g->b[i], !played_yet && i != (int32_t)ui.step);
-        if (i == (int32_t)ui.step && !done)
+        int played_yet = done || i < (int32_t)ui.step, on = ui.sounding >= 0 && !done && i == cur && i < (int32_t)ui.step;
+        if (on)                              /* sounding: ringed */
+            disc(cx, cy, 13, C_INK);
+        button_glyph(cx, cy, 11, g->b[i], !played_yet && i != cur);
+        if (i == cur && !done)
             cv_rect(cx - 8, cy + 15, 17, 2, C_INK);
         note_name(BUTTON_NOTE[g->b[i]] + 12 * set.octave, t);
-        cv_text(cx - text_w(&FONT_XS, t) / 2, cy + 20, &FONT_XS, t, played_yet ? C_INK : C_SOFT);
+        cv_text(cx - text_w(&FONT_XS, t) / 2, cy + 20, &FONT_XS, t, played_yet || i == cur ? C_INK : C_SOFT);
     }
     cv_blit(0, 36);
 }
@@ -660,8 +674,9 @@ void app_frame(void)
         ui.redraw = 1;
     }
     if (ui.heard >= 0 && now - ui.heard_at >= 2500u) {   /* the song heard: its card goes back to the guide */
+        if (ui.heard == (int8_t)set.song)
+            ui.step = 0;
         ui.heard = -1;
-        ui.step = 0;
         ui.redraw = 1;
     }
     if (ui.redraw || now / 300u != blink) {

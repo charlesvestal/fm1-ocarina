@@ -54,8 +54,28 @@ expect note 74
 key 9 up
 wait 30
 expect note -1
+# Bolero of Fire starts D A D A: one D too many keeps D A D (keys 12 9 = F5 D5)
+turn PRESET 7
+wait 300
+key 12 down
+wait 30
+key 12 up
+key 9 down
+wait 30
+key 9 up
+key 12 down
+wait 30
+key 12 up
+key 9 down
+wait 30
+key 9 up
+key 12 down
+wait 30
+expect step 3
+key 12 up
+wait 30
 # the songbook: Song of Storms, then PLAY plays it and names it
-turn PRESET 5
+turn PRESET -2
 wait 300
 expect song 5
 said SONG OF STORMS, 6 OF 12. A, DOWN, UP, A, DOWN, UP
@@ -63,6 +83,7 @@ tap PLAY
 wait 30
 said PLAYING SONG OF STORMS
 expect auto 0
+expect step 1
 expect note 74
 wav storms.wav
 wait 3200
