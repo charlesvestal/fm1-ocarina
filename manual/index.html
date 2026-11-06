@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCA: OCA-1</title>
+<meta name="description" content="OCA-1 for OCA, a firmware for the M-VAVE FM-1.">
+<style>
+/* paper and ink: warm white paper, ink-blue type, vermilion for what is played, mustard for asides; a shade of the
+   paper for code and callouts (CTL-1's; a firmware may restyle its site) */
+:root {
+  --paper: #fbf8f1; --sheet: #efe9dc; --rule: #ddd4c2; --ink: #1e2b5a; --muted: #5d6585;
+  --hot: #e5482e; --hot-t: #f8d3c9; --cool: #d9a21b; --cool-t: #f5e4b8;
+  --hot-ink: #c23a22;                                 /* the vermilion as text: 4.5:1 on the paper */
+  color-scheme: light;
+}
+body {
+  background: var(--paper); color: var(--ink); margin: 0;
+  font: 400 17px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding-inline: 16px; padding-block: 32px 64px;
+}
+main { max-width: 46rem; margin: 0 auto; }
+.page > .site { max-width: 46rem; margin-inline: auto; }
+main:focus { outline: none; }
+h1, h2, h3 { font-family: inherit; text-wrap: balance; line-height: 1.2; }
+h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 .4rem; letter-spacing: .02em; }
+h2 { font-size: 1.3rem; font-weight: 700; margin: 3rem 0 .8rem; padding-top: .8rem; border-top: 2px solid var(--ink); }
+h2 .num { color: var(--hot); margin-right: .5em; font-variant-numeric: tabular-nums; }
+h3 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 .5rem; }
+p, li { max-width: 65ch; }
+p { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.3rem; margin: 0 0 1rem; }
+li { margin: .2rem 0; }
+li::marker { color: var(--hot); }
+strong { font-weight: 700; }
+a { color: var(--ink); text-decoration-color: var(--hot); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { background: var(--hot-t); }
+:focus-visible { outline: 3px solid var(--hot-ink); outline-offset: 2px; }
+.skip { position: absolute; left: 16px; top: -100px; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 0 0 6px 6px; z-index: 1; }
+.skip:focus { top: 0; }
+code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .86em; }
+code { background: var(--sheet); padding: .08em .35em; border-radius: 3px; }
+pre { background: var(--sheet); border-radius: 6px; padding: 14px 16px; overflow-x: auto; line-height: 1.45; margin: 0 0 1.2rem; }
+pre code { background: none; padding: 0; font-size: inherit; }
+hr { display: none; }
+.table { overflow-x: auto; margin: 0 0 1.3rem; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: .45rem .7rem .45rem 0; border-bottom: 1px solid var(--rule); }
+th { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; color: var(--muted); border-bottom: 2px solid var(--ink); }
+td:first-child { white-space: nowrap; }
+.lede { margin-bottom: 1.6rem; }
+.status { background: var(--sheet); border-radius: 6px; padding: 12px 16px; }
+.status p { margin: 0; }
+.site { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.2rem; margin: 0 0 1.6rem; padding-bottom: .5rem; border-bottom: 2px solid var(--ink); }
+.site .home { font-size: 1.1rem; font-weight: 700; letter-spacing: .04em; color: var(--ink); text-decoration: none; }
+.site .home:hover { color: var(--hot-ink); background: none; }
+.site nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: .2rem 1rem; font-size: .92rem; }
+.site nav a { color: var(--ink); text-underline-offset: 3px; }
+.site nav a[aria-current] { text-decoration: none; color: var(--hot-ink); }
+a.home { color: inherit; text-decoration: none; }
+a.home:hover { background: none; color: var(--hot-ink); }
+main > a.home { display: inline-block; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 .4rem; }
+.callout { border-left: 4px solid var(--cool); background: var(--cool-t); padding: 10px 16px; margin: 0 0 1.2rem; max-width: 65ch; border-radius: 0 6px 6px 0; }
+.callout p { margin: 0; }
+details { background: var(--sheet); border-radius: 6px; padding: 0 16px; margin: 0 0 1.2rem; }
+details > summary { cursor: pointer; padding: 10px 0; }
+details[open] > summary { margin-bottom: .4rem; }
+details > :last-child { margin-bottom: 1rem; }
+.swatch { display: inline-block; width: .7em; height: .7em; margin-right: .4em; vertical-align: .02em; }
+nav.contents ol { columns: 2 14rem; column-gap: 2rem; padding-left: 1.3rem; }
+.figs { display: flex; flex-wrap: wrap; gap: 20px; margin: .4rem 0 1.6rem; }
+figure { margin: 0; flex: 0 1 auto; }
+figure img { display: block; max-width: 100%; height: auto; }
+figure.shot img { width: 300px; image-rendering: pixelated; border-radius: 4px; box-shadow: 0 0 0 1px var(--rule); }
+figure.wide { flex-basis: 100%; }
+figure.wide img { width: 100%; }
+figcaption { color: var(--muted); font-size: .88rem; margin-top: .4rem; max-width: 300px; }
+figure.wide figcaption { max-width: none; }
+nav.contents li { break-inside: avoid; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="page">
+<main id="content" tabindex="-1">
+<a class="home" href="../">OCA</a>
+<h1>OCA-1</h1>
+<p>OCA-1 turns your M-VAVE FM-1 into an ocarina. It plays one clear note at a time, close to a pure tone, so a game that listens through a microphone can hear the notes you play. One such game is the Nintendo Switch 2 version of Ocarina of Time, which listens for its songs through the console's microphone.</p>
+<p>The songbook has the game's twelve songs, written with the game's five buttons. The keys you need light up in turn, PLAY plays a song for you, and OCA-1 names any song you finish.</p>
+<div class="figs"><figure class="shot"><img src="img/screen-ready.png" alt="OCA-1 at rest: Zelda&#x27;s Lullaby on the songbook card, its six buttons below the name, the five song notes and the four knobs at the bottom" loading="lazy"><figcaption>OCA-1 at rest</figcaption></figure></div>
+<hr>
+<nav class="contents" aria-label="Contents"><h2 id="contents">Contents</h2>
+<ol><li><a href="#s1">Install</a></li><li><a href="#s2">Playing a song to the game</a></li><li><a href="#s3">The screen</a></li><li><a href="#s4">Controls</a></li><li><a href="#s5">Saving</a></li><li><a href="#s6">MIDI and audio</a></li><li><a href="#s7">The screen reader</a></li></ol>
+</nav>
+<hr>
+<h2 id="s1"><span class="num">1</span>Install</h2>
+<p>To try OCA-1 first, open the emulator. It runs the same code in your browser, with sound, and you can play it with a mouse, a touch screen or the computer keyboard.</p>
+<p>To install from the browser, connect the FM-1 by USB, open the installer in Chrome or Edge and press Install. The browser asks once for permission to use MIDI, so allow it. Don't unplug the cable while it's writing.</p>
+<p>To install from a terminal, run <code>python3 base/tools/fm1_install.py oca-VERSION.fwsc</code>.</p>
+<p>To go back to M-VAVE's own firmware, use the last section of the installer.</p>
+<hr>
+<h2 id="s2"><span class="num">2</span>Playing a song to the game</h2>
+<ol><li>In the game, take out the ocarina and choose to play by sound.</li><li>Hold the FM-1 near the console, with the speaker toward it, and turn MASTER up.</li><li>Play the song on the lit keys, or press PLAY to have OCA-1 play it for you.</li></ol>
+<p>The game's five buttons are on five white keys in the middle of the keyboard:</p>
+<div class="table" tabindex="0" role="region" aria-label="Table: Playing a song to the game (Button, Note, Key)"><table><thead><tr><th>Button</th><th>Note</th><th>Key</th></tr></thead><tbody><tr><td>A</td><td>D5</td><td>the D in the middle</td></tr><tr><td>Down</td><td>F5</td><td>the F above it</td></tr><tr><td>Right</td><td>A5</td><td>the A above that</td></tr><tr><td>Left</td><td>B5</td><td>the B next to it</td></tr><tr><td>Up</td><td>D6</td><td>the D at the top of the five</td></tr></tbody></table></div>
+<p>These keys glow all the time. The next key of the song in the songbook blinks.</p>
+<p>If the game misses notes, hold each one a little longer or bring the FM-1 closer. You can also turn KNOB 1 (BREATH) down for a purer tone. Turn KNOB 4 (TUNE) to move every note up to 50 cents sharp or flat.</p>
+<hr>
+<h2 id="s3"><span class="num">3</span>The screen</h2>
+<div class="figs"><figure class="shot"><img src="img/screen-playing.png" alt="OCA-1 halfway through Zelda&#x27;s Lullaby: the first three buttons played, the fourth ringed and underlined as it sounds, B5 lit among the five notes" loading="lazy"><figcaption>Halfway through a song</figcaption></figure></div>
+<div class="table" tabindex="0" role="region" aria-label="Table: The screen (Part, What it shows)"><table><thead><tr><th>Part</th><th>What it shows</th></tr></thead><tbody><tr><td>Header</td><td>Shows OCA-1 and the octave, or the note that's sounding. After you change something, a message shows here for a moment.</td></tr><tr><td>Songbook card</td><td>Shows the song's place in the book, its name and its buttons, with each button's note below it. The buttons you've played so far are in color. The note you're playing has a ring around it and a line under it, and when you let go, the line moves to the next one.</td></tr><tr><td>Five notes</td><td>Shows the game's buttons and their notes. The note that's sounding is dark.</td></tr><tr><td>Knobs</td><td>Show BREATH, VIBRATO, GLIDE and TUNE.</td></tr></tbody></table></div>
+<div class="figs"><figure class="shot"><img src="img/screen-heard.png" alt="OCA-1 after Zelda&#x27;s Lullaby: PLAYED in the header, the song&#x27;s name in green, every button in color" loading="lazy"><figcaption>A song played</figcaption></figure></div>
+<p>When the last notes you played make up one of the twelve songs, the header says PLAYED and the song's card turns green. This works for any of the twelve, whichever song the songbook is showing.</p>
+<hr>
+<h2 id="s4"><span class="num">4</span>Controls</h2>
+<div class="table" tabindex="0" role="region" aria-label="Table: Controls (Control, What it does)"><table><thead><tr><th>Control</th><th>What it does</th></tr></thead><tbody><tr><td>Keys</td><td>Play the ocarina, one note at a time. The newest key sounds. Let go of it, and the key you held before it sounds again.</td></tr><tr><td>PRESETS or SELECT</td><td>Turn the songbook's pages.</td></tr><tr><td>PLAY</td><td>Plays the song in the songbook. Press it again to stop.</td></tr><tr><td>OCT− · OCT+</td><td>Set the octave to low, middle or high. The game's notes are in the middle octave.</td></tr><tr><td>KNOB 1 · BREATH</td><td>Sets how much air is in the tone, from 0 to 10.</td></tr><tr><td>KNOB 2 · VIBRATO</td><td>Sets the vibrato on a held note, from 0 to 10.</td></tr><tr><td>KNOB 3 · GLIDE</td><td>Sets how much one note slides into the next while you still hold a key, from 0 to 10.</td></tr><tr><td>KNOB 4 · TUNE</td><td>Sets the tuning, from 50 cents flat to 50 cents sharp.</td></tr><tr><td>MASTER</td><td>Sets the volume.</td></tr><tr><td>SAVE</td><td>Saves the settings. SAVE is lit while there are changes to save.</td></tr></tbody></table></div>
+<div class="figs"><figure class="shot"><img src="img/screen-storms.png" alt="OCA-1 on Song of Storms with TUNE at +20C" loading="lazy"><figcaption>Song of Storms, tuned sharp</figcaption></figure></div>
+<hr>
+<h2 id="s5"><span class="num">5</span>Saving</h2>
+<p>Press SAVE to keep the octave, the songbook's page and the four knobs. They come back the next time you switch on the FM-1.</p>
+<hr>
+<h2 id="s6"><span class="num">6</span>MIDI and audio</h2>
+<p>The keys send their notes over USB on channel 1. You can also play the ocarina with notes from USB or the TRS input.</p>
+<p>Over USB, the FM-1 is also an audio device. Your computer can record OCA-1 and play its own sound through the FM-1.</p>
+<hr>
+<h2 id="s7"><span class="num">7</span>The screen reader</h2>
+<p>OCA-1 tells the <a href="https://charlesvestal.github.io/fm1-reader/">FM-1 Screen Reader</a> what its screen shows. The reader says each song's buttons, names each song you play, and reads the knobs as you turn them.</p>
+</main>
+</div>
+</body>
+</html>
