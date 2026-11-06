@@ -88,6 +88,8 @@ jobs:
           ./build.sh --rfm1
           cp app/build/rfm1/"$pkg"-dev+*.rfm1 "build/release-assets/$pkg.rfm1"
         fi
+        # the firmware described for hubs (base/docs/FIRMWARE-JSON.md)
+        cp app/build/firmware.json build/release-assets/
       test: |
         set -euo pipefail
         pkg=oca
@@ -125,7 +127,8 @@ jobs:
         run: |
           set -euo pipefail
           sha256sum --check SHA256SUMS
-          for package in build/release-assets/*.fwsc build/release-assets/*-app.bin build/release-assets/*.rfm1; do
+          for package in build/release-assets/*.fwsc build/release-assets/*-app.bin build/release-assets/*.rfm1 \
+              build/release-assets/firmware.json; do
             gh attestation verify "$package" --repo "$GITHUB_REPOSITORY" \
               --signer-workflow zvenson/fm1-build/.github/workflows/build.yml \
               --source-ref "$GITHUB_REF" --source-digest "$GITHUB_SHA"
