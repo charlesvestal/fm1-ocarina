@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "oca",
+  "name": "OCA-1",
+  "author": "Charles Vestal",
+  "license": "MPL-2.0",
+  "tagline": "an ocarina for the FM-1, for games that listen",
+  "description": "OCA-1 turns the M-VAVE FM-1 into an ocarina for games that listen. It plays one clear note at a time, so the Nintendo Switch 2 version of Ocarina of Time hears your songs through the console's microphone. The songbook has the game's twelve songs: the keys you need light up in turn, PLAY plays a song for you, and OCA-1 names each song you finish.",
+  "tags": ["synth"],
+  "install": "https://charlesvestal.github.io/fm1-ocarina/install/",
+  "site": "https://charlesvestal.github.io/fm1-ocarina/",
+  "source": "https://github.com/charlesvestal/fm1-ocarina",
+  "screenshot": "app/docs/img/screen-playing.png",
+  "hardware": {
+    "models": ["FM-1"],
+    "flash": ["856014", "B36014"],
+    "features": ["usb-audio-in", "usb-audio-out", "screen-reader", "screen-mirror"]
+  },
+  "credits": "Built on fm1-base and felucca-bsp, from Felucca by Leo Kuroshita (Hügelton Instruments)."
+}
